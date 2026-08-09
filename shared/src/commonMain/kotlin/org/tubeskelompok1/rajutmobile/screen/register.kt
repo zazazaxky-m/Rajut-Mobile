@@ -26,12 +26,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import org.tubeskelompok1.rajutmobile.generated.resources.Res
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 import org.tubeskelompok1.rajutmobile.generated.resources.logo
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
+    onRegister: suspend (String, String, String, String) -> String? = { _, _, _, _ -> null },
     onRegisterBerhasil: () -> Unit,
     onBackToLogin: () -> Unit
 ) {
@@ -42,6 +45,9 @@ fun RegisterScreen(
     var konfirmasiPassword by remember { mutableStateOf("") }
     var passwordTerlihat by remember { mutableStateOf(false) }
     var konfirmasiTerlihat by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -162,13 +168,28 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            // Belum ada backend, jadi langsung dianggap berhasil daftar
-            onClick = onRegisterBerhasil,
+            onClick = {
+                if (password != konfirmasiPassword) {
+                    errorMessage = "Konfirmasi kata sandi tidak sama"
+                } else {
+                    scope.launch {
+                        isLoading = true
+                        errorMessage = onRegister(nama.trim(), email.trim(), noTelepon.trim(), password)
+                        isLoading = false
+                        if (errorMessage == null) onRegisterBerhasil()
+                    }
+                }
+            },
+            enabled = !isLoading && nama.isNotBlank() && email.isNotBlank() && password.isNotBlank(),
             colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary),
             shape = RoundedCornerShape(28.dp),
             modifier = Modifier.fillMaxWidth().height(52.dp)
         ) {
-            Text("Daftar", color = AppColors.White, fontWeight = FontWeight.SemiBold)
+            Text(if (isLoading) "Memproses..." else "Daftar", color = AppColors.White, fontWeight = FontWeight.SemiBold)
+        }
+
+        errorMessage?.let {
+            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 10.dp))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -192,5 +213,14 @@ private fun LabelField(label: String) {
         style = MaterialTheme.typography.labelLarge,
         color = AppColors.TextPrimary,
         modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp, top = 4.dp)
+    )
+}
+
+@Preview
+@Composable
+fun RegisterScreenPreview() {
+    RegisterScreen(
+        onRegisterBerhasil = {},
+        onBackToLogin = {}
     )
 }

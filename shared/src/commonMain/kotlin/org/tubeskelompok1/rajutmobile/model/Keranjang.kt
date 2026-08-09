@@ -35,6 +35,16 @@ object CartManager {
         itemKeranjang.removeAll { it.produk.id == produk.id }
     }
 
+    fun ubahJumlah(produk: Produk, jumlah: Int) {
+        val index = itemKeranjang.indexOfFirst { it.produk.id == produk.id }
+        if (index == -1) return
+        if (jumlah <= 0) {
+            itemKeranjang.removeAt(index)
+        } else {
+            itemKeranjang[index] = itemKeranjang[index].copy(jumlah = jumlah)
+        }
+    }
+
     fun totalHargaKeranjang(): Int {
         return itemKeranjang.sumOf { it.produk.harga * it.jumlah }
     }

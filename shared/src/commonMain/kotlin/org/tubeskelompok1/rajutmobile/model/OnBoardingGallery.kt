@@ -4,7 +4,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.tubeskelompok1.rajutmobile.generated.resources.Res
 import org.tubeskelompok1.rajutmobile.generated.resources.onboarding_1
 import org.tubeskelompok1.rajutmobile.generated.resources.onboarding_2
-import org.tubeskelompok1.rajutmobile.generated.resources.onboarding_3
+import org.tubeskelompok1.rajutmobile.generated.resources.onboarding_workshop
 
 // Satu slide onboarding: gambar + judul + deskripsi
 data class OnboardingItem(
@@ -26,9 +26,9 @@ object DataOnboarding {
             description = "Pesan produk rajut dengan warna, ukuran, dan desain favoritmu."
         ),
         OnboardingItem(
-            image = Res.drawable.onboarding_3,
-            title = "Pantau Progress Pesanan",
-            description = "Rajutanmu sedang dibuat dengan penuh perhatian. Pantau setiap prosesnya hingga sampai ke tanganmu."
+            image = Res.drawable.onboarding_workshop,
+            title = "Belajar Crochet\nBersama Arajut",
+            description = "Belajar merajut bersama Arajut melalui workshop yang seru, kreatif, dan ramah untuk pemula."
         )
     )
 }

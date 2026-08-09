@@ -13,12 +13,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.painterResource
 import org.tubeskelompok1.rajutmobile.model.DataOnboarding
+import org.tubeskelompok1.rajutmobile.model.OnboardingItem
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 
 @Composable
@@ -52,16 +58,24 @@ fun OnboardingScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-                    TextButton(onClick = onSelesai) {
-                        Text(
-                            text = "Lewati",
-                            color = AppColors.TextSecondary,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    if (pagerState.currentPage != slides.lastIndex) {
+                        TextButton(onClick = onSelesai) {
+                            Text(
+                                text = "Lewati",
+                                color = AppColors.TextSecondary,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.height(48.dp))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(68.dp))
+                Spacer(
+                    modifier = Modifier.height(
+                        if (pagerState.currentPage == slides.lastIndex) 20.dp else 40.dp
+                    )
+                )
 
                 // Horizontal Pager
                 HorizontalPager(
@@ -69,42 +83,10 @@ fun OnboardingScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) { page ->
                     val slide = slides[page]
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        // Gambar
-                        Image(
-                            painter = painterResource(slide.image),
-                            contentDescription = slide.title,
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(270.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                        )
-
-                        Spacer(modifier = Modifier.height(32.dp)) // Jarak rapat antara Gambar & Judul
-
-                        // Judul
-                        Text(
-                            text = slide.title,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = AppColors.TextPrimary,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp)) // Jarak rapat antara Judul & Deskripsi
-
-                        // Deskripsi
-                        Text(
-                            text = slide.description,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = AppColors.TextSecondary,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
+                    if (page == slides.lastIndex) {
+                        WorkshopOnboardingPage(slide = slide)
+                    } else {
+                        DefaultOnboardingPage(slide = slide)
                     }
                 }
             }
@@ -154,7 +136,7 @@ fun OnboardingScreen(
                     .height(52.dp)
             ) {
                 Text(
-                    text = "Lanjut",
+                    text = if (pagerState.currentPage == slides.lastIndex) "Mulai Sekarang" else "Lanjut",
                     color = AppColors.White,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
@@ -162,4 +144,96 @@ fun OnboardingScreen(
             }
         }
     }
+}
+
+@Composable
+private fun DefaultOnboardingPage(slide: OnboardingItem) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(slide.image),
+            contentDescription = slide.title,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
+                .clip(RoundedCornerShape(24.dp))
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            text = slide.title,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = AppColors.TextPrimary,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = slide.description,
+            style = MaterialTheme.typography.bodyMedium,
+            color = AppColors.TextSecondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun WorkshopOnboardingPage(slide: OnboardingItem) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(slide.image),
+            contentDescription = slide.title,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(360.dp)
+                .clip(RoundedCornerShape(24.dp))
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = buildAnnotatedString {
+                withStyle(SpanStyle(color = AppColors.Primary)) {
+                    append("Belajar")
+                }
+                append(" Crochet\nBersama ")
+                withStyle(SpanStyle(color = AppColors.Primary)) {
+                    append("Arajut")
+                }
+            },
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = AppColors.TextPrimary,
+            textAlign = TextAlign.Center,
+            lineHeight = 30.sp,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = slide.description,
+            style = MaterialTheme.typography.bodyMedium,
+            color = AppColors.TextSecondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun OnboardingScreenPreview() {
+    OnboardingScreen(onSelesai = {})
 }

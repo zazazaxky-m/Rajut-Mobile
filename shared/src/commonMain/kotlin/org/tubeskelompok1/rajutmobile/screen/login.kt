@@ -25,12 +25,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import org.tubeskelompok1.rajutmobile.generated.resources.Res
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 import org.tubeskelompok1.rajutmobile.generated.resources.logo
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
+    onLogin: suspend (String, String) -> String? = { _, _ -> null },
     onLoginBerhasil: () -> Unit,
     onGoToRegister: () -> Unit
 ) {
@@ -38,6 +41,9 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordTerlihat by remember { mutableStateOf(false) }
     var ingatSaya by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -121,13 +127,24 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            // Backend (Laravel Sanctum) belum diimplementasikan, jadi langsung navigasi tanpa validasi sungguhan
-            onClick = onLoginBerhasil,
+            onClick = {
+                scope.launch {
+                    isLoading = true
+                    errorMessage = onLogin(email.trim(), password)
+                    isLoading = false
+                    if (errorMessage == null) onLoginBerhasil()
+                }
+            },
+            enabled = !isLoading && email.isNotBlank() && password.isNotBlank(),
             colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary),
             shape = RoundedCornerShape(28.dp),
             modifier = Modifier.fillMaxWidth().height(52.dp)
         ) {
-            Text("Masuk", color = AppColors.White, fontWeight = FontWeight.SemiBold)
+            Text(if (isLoading) "Memproses..." else "Masuk", color = AppColors.White, fontWeight = FontWeight.SemiBold)
+        }
+
+        errorMessage?.let {
+            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 10.dp))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -152,5 +169,14 @@ private fun LabelField(label: String) {
         style = MaterialTheme.typography.labelLarge,
         color = AppColors.TextPrimary,
         modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp, top = 4.dp)
+    )
+}
+
+@Preview
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(
+        onLoginBerhasil = {},
+        onGoToRegister = {}
     )
 }

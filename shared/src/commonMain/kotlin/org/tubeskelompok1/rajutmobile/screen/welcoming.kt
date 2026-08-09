@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import org.tubeskelompok1.rajutmobile.generated.resources.Res
 import org.tubeskelompok1.rajutmobile.generated.resources.welcome_hero
 import org.tubeskelompok1.rajutmobile.ui.AppColors
@@ -143,4 +144,13 @@ fun WelcomeScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun WelcomeScreenPreview() {
+    WelcomeScreen(
+        onMasuk = {},
+        onDaftar = {}
+    )
 }

@@ -1,22 +1,32 @@
 package org.tubeskelompok1.rajutmobile.model
 
-// Model data untuk satu produk rajutan
+import org.jetbrains.compose.resources.DrawableResource
+import org.tubeskelompok1.rajutmobile.generated.resources.Res
+import org.tubeskelompok1.rajutmobile.generated.resources.product_baby_shoes
+import org.tubeskelompok1.rajutmobile.generated.resources.product_bag_gray
+import org.tubeskelompok1.rajutmobile.generated.resources.product_handbag_red
+import org.tubeskelompok1.rajutmobile.generated.resources.product_hat_yellow
+import org.tubeskelompok1.rajutmobile.generated.resources.product_keychain_flower
+import org.tubeskelompok1.rajutmobile.generated.resources.product_sling_cream
+import org.tubeskelompok1.rajutmobile.generated.resources.product_totebag_orange
+import org.tubeskelompok1.rajutmobile.generated.resources.product_vest_blue
+
 data class Produk(
     val id: Int,
     val nama: String,
     val harga: Int,
     val deskripsi: String,
     val warna: String,
-    val stok: Int
+    val stok: Int,
+    val kategori: String,
+    val gambar: DrawableResource
 )
 
-// Model data untuk satu item di keranjang (produk + jumlah beli)
 data class ItemKeranjang(
     val produk: Produk,
     var jumlah: Int
 )
 
-// Model data untuk satu riwayat transaksi
 data class Transaksi(
     val id: Int,
     val tanggal: String,
@@ -25,82 +35,115 @@ data class Transaksi(
     val status: String
 )
 
-// ==== DATA MOCKUP (dummy, belum dari backend) ====
 object DataMockup {
-
     val daftarProduk = listOf(
         Produk(
             id = 1,
-            nama = "Topi Rajut Anak",
-            harga = 45000,
-            deskripsi = "Topi rajut lembut untuk anak-anak, hangat dan nyaman dipakai sehari-hari.",
-            warna = "Kuning",
-            stok = 12
+            nama = "Vest biru",
+            harga = 80_000,
+            deskripsi = "Pancarkan gaya retro yang manis dengan Ocean Granny Square Top dari Arajut! Atasan rajut buatan tangan dengan desain penuh perpaduan warna biru dan krem yang estetik, pas banget untuk menyempurnakan OOTD harianmu.",
+            warna = "Biru dan krem",
+            stok = 8,
+            kategori = "Vest",
+            gambar = Res.drawable.product_vest_blue
         ),
         Produk(
             id = 2,
-            nama = "Syal Rajut Wol",
-            harga = 85000,
-            deskripsi = "Syal rajut berbahan wol premium, cocok untuk cuaca dingin.",
-            warna = "Abu-abu",
-            stok = 8
+            nama = "Sling bag krem",
+            harga = 70_000,
+            deskripsi = "Tas selempang rajut handmade dengan motif bunga timbul dan warna krem yang lembut.",
+            warna = "Krem",
+            stok = 10,
+            kategori = "Tas",
+            gambar = Res.drawable.product_sling_cream
         ),
         Produk(
             id = 3,
-            nama = "Tas Rajut Serut",
-            harga = 60000,
-            deskripsi = "Tas rajut model serut, motif polos minimalis, muat banyak barang.",
-            warna = "Krem",
-            stok = 20
+            nama = "Sepatu Bayi",
+            harga = 75_000,
+            deskripsi = "Sepatu bayi rajut yang lembut, ringan, dan nyaman untuk menemani langkah kecil buah hati.",
+            warna = "Kuning dan hijau",
+            stok = 6,
+            kategori = "Sepatu",
+            gambar = Res.drawable.product_baby_shoes
         ),
         Produk(
             id = 4,
-            nama = "Sweater Rajut Wanita",
-            harga = 150000,
-            deskripsi = "Sweater rajut oversize dengan motif kabel klasik.",
-            warna = "Merah Marun",
-            stok = 5
+            nama = "Keychain bunga",
+            harga = 50_000,
+            deskripsi = "Gantungan kunci berbentuk bunga yang dibuat dengan rajutan detail dalam warna merah muda dan ungu.",
+            warna = "Pink dan ungu",
+            stok = 15,
+            kategori = "Keychain",
+            gambar = Res.drawable.product_keychain_flower
         ),
         Produk(
             id = 5,
-            nama = "Sarung Tangan Rajut",
-            harga = 35000,
-            deskripsi = "Sarung tangan rajut hangat, elastis dan pas di tangan.",
-            warna = "Coklat",
-            stok = 15
+            nama = "Hand bag merah",
+            harga = 50_000,
+            deskripsi = "Hand bag rajut merah dengan tali panjang, praktis untuk aktivitas sehari-hari.",
+            warna = "Merah",
+            stok = 9,
+            kategori = "Tas",
+            gambar = Res.drawable.product_handbag_red
         ),
         Produk(
             id = 6,
-            nama = "Dompet Rajut Mini",
-            harga = 40000,
-            deskripsi = "Dompet rajut ukuran mini, cocok untuk menyimpan koin dan kartu.",
-            warna = "Pink",
-            stok = 10
+            nama = "Tas abu",
+            harga = 80_000,
+            deskripsi = "Tas rajut abu bermotif bunga dengan bentuk yang lapang dan tali bahu yang nyaman.",
+            warna = "Abu-abu",
+            stok = 7,
+            kategori = "Tas",
+            gambar = Res.drawable.product_bag_gray
+        ),
+        Produk(
+            id = 7,
+            nama = "Topi kuning",
+            harga = 60_000,
+            deskripsi = "Topi rajut kuning dengan detail bunga, cocok untuk tampilan ceria dan kasual.",
+            warna = "Kuning",
+            stok = 12,
+            kategori = "Topi",
+            gambar = Res.drawable.product_hat_yellow
+        ),
+        Produk(
+            id = 8,
+            nama = "Totebag oranye",
+            harga = 60_000,
+            deskripsi = "Totebag rajut oranye dengan pola geometris yang ringan untuk dibawa sehari-hari.",
+            warna = "Oranye",
+            stok = 11,
+            kategori = "Tas",
+            gambar = Res.drawable.product_totebag_orange
         )
     )
 
-    // Riwayat transaksi dummy, supaya halaman Riwayat tidak kosong saat pertama dibuka
+    val customProduct = Produk(
+        id = 100,
+        nama = "Totebag Pink",
+        harga = 70_000,
+        deskripsi = "Totebag rajut custom sesuai referensi dan ukuran pilihan pelanggan.",
+        warna = "Pink",
+        stok = 1,
+        kategori = "Custom",
+        gambar = Res.drawable.product_handbag_red
+    )
+
     val daftarTransaksiAwal = listOf(
         Transaksi(
             id = 1001,
             tanggal = "20 Juli 2026",
-            items = listOf(
-                ItemKeranjang(daftarProduk[0], 2),
-                ItemKeranjang(daftarProduk[2], 1)
-            ),
-            totalHarga = (45000 * 2) + 60000,
-            status = "Selesai"
-        ),
-        Transaksi(
-            id = 1002,
-            tanggal = "15 Juli 2026",
-            items = listOf(
-                ItemKeranjang(daftarProduk[3], 1)
-            ),
-            totalHarga = 150000,
+            items = listOf(ItemKeranjang(daftarProduk[0], 1), ItemKeranjang(daftarProduk[3], 1)),
+            totalHarga = 130_000,
             status = "Selesai"
         )
     )
 
     fun cariProdukById(id: Int): Produk? = daftarProduk.find { it.id == id }
+}
+
+fun formatRupiah(value: Int): String {
+    val formatted = value.toString().reversed().chunked(3).joinToString(".").reversed()
+    return "Rp$formatted"
 }
