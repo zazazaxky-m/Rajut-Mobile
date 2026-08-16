@@ -402,7 +402,20 @@ fun AdminProductFormScreen(
                 onClick = {
                     scope.launch {
                         saving = true
-                        error = onSave(AdminProductRequest(name, slug, categoryId, description.take(120), description, price.toDoubleOrNull() ?: 0.0, stock.toIntOrNull() ?: 0, isFeatured = isFeatured, isActive = isActive))
+                        error = onSave(
+                            AdminProductRequest(
+                                name = name,
+                                slug = slug,
+                                categoryId = categoryId,
+                                category = categories.firstOrNull { it.id == categoryId }?.name,
+                                shortDescription = description.take(120),
+                                description = description,
+                                price = price.toDoubleOrNull() ?: 0.0,
+                                stock = stock.toIntOrNull() ?: 0,
+                                isFeatured = isFeatured,
+                                isActive = isActive
+                            )
+                        )
                         saving = false
                         if (error == null) onBack()
                     }
@@ -599,13 +612,13 @@ fun AdminWorkshopFormScreen(
 }
 
 private val previewDashboard = AdminDashboardDto(8, 2, 12, 2, 1_250_000.0)
-private val previewProduct = AdminProductDto("1", "Vest Biru", "vest-biru", "1", "Vest", null, "Vest rajut handmade", 80_000.0, 3, "ready_stock", null, true, true)
-private val previewOrder = AdminOrderDto("1", "ARJ1234567", "packed", "Azzahra Putri", "azzahra@gmail.com", 92_000.0, 92_000.0, 0.0)
-private val previewWorkshop = AdminWorkshopDto("1", "Beginner Crochet Bag Workshop", "beginner-crochet", "Belajar crochet", "2026-09-30T10:00:00+07:00", "13.00", "Bandung Creative Hub", 155_000.0, true)
+private val previewProduct = AdminProductDto(id = "1", name = "Vest Biru", slug = "vest-biru", categoryId = "1", category = "Vest", shortDescription = null, description = "Vest rajut handmade", price = 80_000.0, stock = 3, availabilityType = "ready_stock", preorderDuration = null, isFeatured = true, isActive = true)
+private val previewOrder = AdminOrderDto(id = "1", orderNumber = "ARJ1234567", status = "packed", customerName = "Azzahra Putri", customerEmail = "azzahra@gmail.com", total = 92_000.0, paidAmount = 92_000.0, remainingPayment = 0.0)
+private val previewWorkshop = AdminWorkshopDto(id = "1", title = "Beginner Crochet Bag Workshop", slug = "beginner-crochet", description = "Belajar crochet", eventDate = "2026-09-30T10:00:00+07:00", endTime = "13.00", location = "Bandung Creative Hub", price = 155_000.0, isActive = true)
 
 @Preview @Composable fun AdminDashboardPreview() { AdminDashboardScreen(previewDashboard, listOf(previewProduct), listOf(previewOrder), {}, {}, {}, {}, {}) }
 @Preview @Composable fun AdminProductsPreview() { AdminProductsScreen(listOf(previewProduct), {}, {}, {}, {}, {}, { null }) }
-@Preview @Composable fun AdminProductFormPreview() { AdminProductFormScreen(previewProduct, listOf(AdminCategoryDto("1", "Vest", "vest", true)), {}, { null }) }
+@Preview @Composable fun AdminProductFormPreview() { AdminProductFormScreen(previewProduct, listOf(AdminCategoryDto(id = "1", name = "Vest", slug = "vest", isActive = true)), {}, { null }) }
 @Preview @Composable fun AdminOrdersPreview() { AdminOrdersScreen(listOf(previewOrder), {}, {}, {}, { _, _ -> null }) }
 @Preview @Composable fun AdminWorkshopsPreview() { AdminWorkshopsScreen(listOf(previewWorkshop), {}, {}, {}, {}, {}, { null }) }
 @Preview @Composable fun AdminWorkshopFormPreview() { AdminWorkshopFormScreen(previewWorkshop, {}, { null }) }

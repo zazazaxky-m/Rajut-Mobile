@@ -2,7 +2,9 @@ package org.tubeskelompok1.rajutmobile.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,21 +31,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.tubeskelompok1.rajutmobile.model.DataMockup
+import org.tubeskelompok1.rajutmobile.model.Produk
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 
 @Composable
 fun KatalogScreen(
-    onProdukClick: (Int) -> Unit,
+    onProdukClick: (String) -> Unit,
     onBack: () -> Unit = {},
     onCart: () -> Unit = {},
-    remoteProducts: List<org.tubeskelompok1.rajutmobile.model.Produk> = DataMockup.daftarProduk
+    remoteProducts: List<Produk> = DataMockup.daftarProduk
 ) {
     var selectedCategory by remember { mutableStateOf("Semua") }
-    val categories = listOf("Semua", "Vest", "Topi", "Keychain")
+    val dynamicCategories = remember(remoteProducts) {
+        val list = mutableListOf("Semua")
+        val fromProducts = remoteProducts.map { it.kategori }.filter { it.isNotBlank() }.distinct()
+        if (fromProducts.isNotEmpty()) {
+            list.addAll(fromProducts)
+        } else {
+            list.addAll(listOf("Vest", "Topi", "Keychain", "Tas"))
+        }
+        list.distinct()
+    }
+
     val products = if (selectedCategory == "Semua") {
         remoteProducts
     } else {
-        remoteProducts.filter { it.kategori == selectedCategory }
+        remoteProducts.filter { it.kategori.equals(selectedCategory, ignoreCase = true) }
     }
 
     Scaffold(
@@ -56,27 +70,29 @@ fun KatalogScreen(
             )
         }
     ) { padding ->
-        androidx.compose.foundation.layout.Column(
+        Column(
             modifier = Modifier.fillMaxSize().padding(padding)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 18.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                categories.forEach { category ->
-                    val selected = selectedCategory == category
+                dynamicCategories.forEach { category ->
+                    val selected = selectedCategory.equals(category, ignoreCase = true)
                     Text(
                         text = category,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
                         color = if (selected) Color.White else AppColors.Primary,
                         modifier = Modifier
-                            .weight(1f)
                             .clip(RoundedCornerShape(20.dp))
                             .background(if (selected) Color(0xFFD27A85) else Color(0xFFF8DFE2))
                             .clickable { selectedCategory = category }
-                            .padding(vertical = 7.dp),
+                            .padding(horizontal = 16.dp, vertical = 7.dp),
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
                     )
                 }

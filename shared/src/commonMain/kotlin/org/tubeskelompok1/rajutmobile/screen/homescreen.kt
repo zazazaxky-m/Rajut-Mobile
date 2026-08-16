@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,21 +42,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import org.tubeskelompok1.rajutmobile.data.remote.UserDto
 import org.tubeskelompok1.rajutmobile.generated.resources.Res
 import org.tubeskelompok1.rajutmobile.generated.resources.workshop_group
 import org.tubeskelompok1.rajutmobile.model.DataMockup
+import org.tubeskelompok1.rajutmobile.model.Produk
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 
 @Composable
 fun HomeScreen(
     onWorkshop: () -> Unit,
     onAllProducts: () -> Unit,
-    onProductClick: (Int) -> Unit,
+    onProductClick: (String) -> Unit,
     onCustomOrder: () -> Unit,
     onCart: () -> Unit,
     onOrders: () -> Unit,
     onProfile: () -> Unit,
-    products: List<org.tubeskelompok1.rajutmobile.model.Produk> = DataMockup.daftarProduk
+    products: List<Produk> = DataMockup.daftarProduk,
+    user: UserDto? = null
 ) {
     Scaffold(
         containerColor = AppColors.Background,
@@ -72,7 +76,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize().padding(padding),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item { HomeHeader(onCart = onCart) }
+            item { HomeHeader(user = user, onCart = onCart) }
             item {
                 WorkshopHero(
                     onClick = onWorkshop,
@@ -118,19 +122,30 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(onCart: () -> Unit) {
+private fun HomeHeader(user: UserDto?, onCart: () -> Unit) {
+    val firstName = user?.displayName
+        ?.trim()
+        ?.split(" ")
+        ?.firstOrNull { it.isNotBlank() }
+        ?.replaceFirstChar { it.uppercase() }
+        ?: "Sahabat Arajut"
+
     Surface(
         color = Color(0xFFFFD8DC),
         shape = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp),
-        shadowElevation = 5.dp
+        shadowElevation = 5.dp,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 22.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 22.dp, vertical = 18.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    "Halo, Azzahra!",
+                    "Halo, $firstName!",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF521923)

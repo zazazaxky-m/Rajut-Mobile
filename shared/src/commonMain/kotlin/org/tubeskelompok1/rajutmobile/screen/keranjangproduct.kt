@@ -118,7 +118,7 @@ private fun CartItemCard(
             Spacer(Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (item.produk.id == 1) "Blue Vest" else item.produk.nama,
+                    text = if (item.produk.id == "1") "Blue Vest" else item.produk.nama,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )

@@ -33,18 +33,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import org.tubeskelompok1.rajutmobile.model.CartManager
 import org.tubeskelompok1.rajutmobile.model.DataMockup
+import org.tubeskelompok1.rajutmobile.model.Produk
 import org.tubeskelompok1.rajutmobile.model.formatRupiah
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 
 @Composable
 fun DetailBarangScreen(
-    produkId: Int,
+    produkId: String,
     onBack: () -> Unit,
     onLihatKeranjang: () -> Unit,
-    products: List<org.tubeskelompok1.rajutmobile.model.Produk> = DataMockup.daftarProduk,
-    onAddToCart: suspend (org.tubeskelompok1.rajutmobile.model.Produk) -> String? = { null }
+    products: List<Produk> = DataMockup.daftarProduk,
+    onAddToCart: suspend (Produk) -> String? = { null }
 ) {
     val product = products.find { it.id == produkId } ?: DataMockup.cariProdukById(produkId)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -148,5 +148,5 @@ fun DetailBarangScreen(
 @Preview
 @Composable
 fun DetailBarangScreenPreview() {
-    DetailBarangScreen(1, {}, {})
+    DetailBarangScreen("1", {}, {})
 }

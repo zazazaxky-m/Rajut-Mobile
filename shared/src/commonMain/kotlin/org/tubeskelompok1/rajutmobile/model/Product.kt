@@ -12,14 +12,15 @@ import org.tubeskelompok1.rajutmobile.generated.resources.product_totebag_orange
 import org.tubeskelompok1.rajutmobile.generated.resources.product_vest_blue
 
 data class Produk(
-    val id: Int,
+    val id: String,
     val nama: String,
     val harga: Int,
     val deskripsi: String,
     val warna: String,
     val stok: Int,
     val kategori: String,
-    val gambar: DrawableResource
+    val gambar: DrawableResource,
+    val imageUrl: String? = null
 )
 
 data class ItemKeranjang(
@@ -38,7 +39,7 @@ data class Transaksi(
 object DataMockup {
     val daftarProduk = listOf(
         Produk(
-            id = 1,
+            id = "1",
             nama = "Vest biru",
             harga = 80_000,
             deskripsi = "Pancarkan gaya retro yang manis dengan Ocean Granny Square Top dari Arajut! Atasan rajut buatan tangan dengan desain penuh perpaduan warna biru dan krem yang estetik, pas banget untuk menyempurnakan OOTD harianmu.",
@@ -48,7 +49,7 @@ object DataMockup {
             gambar = Res.drawable.product_vest_blue
         ),
         Produk(
-            id = 2,
+            id = "2",
             nama = "Sling bag krem",
             harga = 70_000,
             deskripsi = "Tas selempang rajut handmade dengan motif bunga timbul dan warna krem yang lembut.",
@@ -58,7 +59,7 @@ object DataMockup {
             gambar = Res.drawable.product_sling_cream
         ),
         Produk(
-            id = 3,
+            id = "3",
             nama = "Sepatu Bayi",
             harga = 75_000,
             deskripsi = "Sepatu bayi rajut yang lembut, ringan, dan nyaman untuk menemani langkah kecil buah hati.",
@@ -68,7 +69,7 @@ object DataMockup {
             gambar = Res.drawable.product_baby_shoes
         ),
         Produk(
-            id = 4,
+            id = "4",
             nama = "Keychain bunga",
             harga = 50_000,
             deskripsi = "Gantungan kunci berbentuk bunga yang dibuat dengan rajutan detail dalam warna merah muda dan ungu.",
@@ -78,7 +79,7 @@ object DataMockup {
             gambar = Res.drawable.product_keychain_flower
         ),
         Produk(
-            id = 5,
+            id = "5",
             nama = "Hand bag merah",
             harga = 50_000,
             deskripsi = "Hand bag rajut merah dengan tali panjang, praktis untuk aktivitas sehari-hari.",
@@ -88,7 +89,7 @@ object DataMockup {
             gambar = Res.drawable.product_handbag_red
         ),
         Produk(
-            id = 6,
+            id = "6",
             nama = "Tas abu",
             harga = 80_000,
             deskripsi = "Tas rajut abu bermotif bunga dengan bentuk yang lapang dan tali bahu yang nyaman.",
@@ -98,7 +99,7 @@ object DataMockup {
             gambar = Res.drawable.product_bag_gray
         ),
         Produk(
-            id = 7,
+            id = "7",
             nama = "Topi kuning",
             harga = 60_000,
             deskripsi = "Topi rajut kuning dengan detail bunga, cocok untuk tampilan ceria dan kasual.",
@@ -108,7 +109,7 @@ object DataMockup {
             gambar = Res.drawable.product_hat_yellow
         ),
         Produk(
-            id = 8,
+            id = "8",
             nama = "Totebag oranye",
             harga = 60_000,
             deskripsi = "Totebag rajut oranye dengan pola geometris yang ringan untuk dibawa sehari-hari.",
@@ -120,7 +121,7 @@ object DataMockup {
     )
 
     val customProduct = Produk(
-        id = 100,
+        id = "100",
         nama = "Totebag Pink",
         harga = 70_000,
         deskripsi = "Totebag rajut custom sesuai referensi dan ukuran pilihan pelanggan.",
@@ -140,7 +141,8 @@ object DataMockup {
         )
     )
 
-    fun cariProdukById(id: Int): Produk? = daftarProduk.find { it.id == id }
+    fun cariProdukById(id: String): Produk? = daftarProduk.find { it.id == id }
+    fun cariProdukById(id: Int): Produk? = daftarProduk.find { it.id == id.toString() }
 }
 
 fun formatRupiah(value: Int): String {

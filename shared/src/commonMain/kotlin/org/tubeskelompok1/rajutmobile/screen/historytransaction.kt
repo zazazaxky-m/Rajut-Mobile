@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -56,14 +57,26 @@ fun RiwayatScreen(
     Scaffold(
         containerColor = AppColors.Background,
         topBar = {
-            Surface(color = Color(0xFFFFE3E7), shadowElevation = 4.dp) {
-                Text(
-                    "Riwayat Pesanan",
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
+            Surface(
+                color = Color(0xFFFFE3E7),
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(vertical = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Riwayat Pesanan",
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = AppColors.TextPrimary
+                    )
+                }
             }
         },
         bottomBar = {
@@ -85,14 +98,14 @@ fun RiwayatScreen(
                     onClick = { onOrderClick(order.id) }
                 )
             }
-            items(customOrders, key = { "custom-${it.id}" }) { order ->
+            items(customOrders, key = { "custom-${it.primaryId}" }) { order ->
                 OrderHistoryCard(
-                    orderId = "#CSM${order.id.padStart(7, '0')}",
+                    orderId = if (order.primaryId.length > 8) "#CSM-${order.primaryId.take(8).uppercase()}" else "#CSM${order.primaryId.padStart(7, '0')}",
                     status = "Custom",
                     product = DataMockup.customProduct,
-                    details = listOf(order.color, order.size),
+                    details = listOf(order.color, order.size).filter { it.isNotBlank() }.ifEmpty { listOf("Custom") },
                     total = order.estimatedPrice?.toInt() ?: 0,
-                    onClick = { onOrderClick("custom-${order.id}") }
+                    onClick = { onOrderClick("custom-${order.primaryId}") }
                 )
             }
             if (orders.isEmpty() && customOrders.isEmpty()) {
@@ -159,7 +172,7 @@ private fun OrderHistoryCard(
                 Spacer(Modifier.width(16.dp))
                 Column {
                     Text(
-                        if (product.id == 1) "Blue Vest" else product.nama,
+                        if (product.id == "1") "Blue Vest" else product.nama,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -203,7 +216,7 @@ fun OrderDetailScreen(
     val item = order.items.firstOrNull()
     val product = DataMockup.daftarProduk.firstOrNull { it.nama.equals(item?.productName, ignoreCase = true) }
         ?: DataMockup.daftarProduk.first()
-    val address = order.shippingAddress
+    val address = order.effectiveAddress
     Scaffold(
         containerColor = AppColors.Background,
         topBar = { ArajutTopBar("Detail Pesanan", onBack) }
@@ -239,9 +252,9 @@ fun OrderDetailScreen(
             }
             OrderSectionLabel("Informasi Pengiriman")
             CardSection {
-                Text(address.recipientName, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+                Text(address.recipientName.ifBlank { "Penerima" }, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.height(7.dp))
-                Text(address.phone, style = MaterialTheme.typography.bodySmall)
+                Text(address.phone.ifBlank { "-" }, style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.height(7.dp))
                 Text("${address.addressLine}, ${address.city}, ${address.province}\n${address.postalCode}", style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.height(10.dp))
@@ -272,18 +285,18 @@ private fun CustomOrderDetailContent(onBack: () -> Unit, order: CustomOrderDto) 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.AutoMirrored.Outlined.ReceiptLong, null, tint = Color(0xFF974552), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(10.dp))
-                    Text("#CSM${order.id.padStart(7, '0')}", color = Color(0xFF8D3440), fontWeight = FontWeight.SemiBold)
+                    Text(if (order.primaryId.length > 8) "#CSM-${order.primaryId.take(8).uppercase()}" else "#CSM${order.primaryId.padStart(7, '0')}", color = Color(0xFF8D3440), fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.weight(1f))
                     StatusPill(orderStatusLabel(order.status))
                 }
             }
             OrderSectionLabel("Produk Custom")
             CardSection {
-                SummaryLine("Jenis Produk", order.productType)
+                SummaryLine("Jenis Produk", order.effectiveTitle)
                 Spacer(Modifier.height(10.dp))
-                SummaryLine("Warna", order.color)
+                SummaryLine("Warna", order.color.ifBlank { "Sesuai Request" })
                 Spacer(Modifier.height(10.dp))
-                SummaryLine("Ukuran", order.size)
+                SummaryLine("Ukuran", order.size.ifBlank { "All Size" })
                 Spacer(Modifier.height(10.dp))
                 SummaryLine("Estimasi Pengerjaan", order.estimatedDays ?: "Menunggu konfirmasi")
                 Spacer(Modifier.height(10.dp))

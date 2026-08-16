@@ -128,7 +128,8 @@ fun RajutNavGraph(repository: AppRepository) {
                     onCart = { navController.navigate(Screen.Keranjang.route) },
                     onOrders = { navController.navigate(Screen.Riwayat.route) },
                     onProfile = { navController.navigate(Screen.Profile.route) },
-                    products = products
+                    products = products,
+                    user = user
                 )
             }
 
@@ -197,9 +198,9 @@ fun RajutNavGraph(repository: AppRepository) {
 
             composable(
                 route = Screen.Detail.route,
-                arguments = listOf(navArgument("produkId") { type = NavType.IntType })
+                arguments = listOf(navArgument("produkId") { type = NavType.StringType })
             ) { backStackEntry ->
-                val produkId = backStackEntry.arguments?.read { getIntOrNull("produkId")} ?: 0
+                val produkId = backStackEntry.arguments?.read { getStringOrNull("produkId") }.orEmpty()
                 DetailBarangScreen(
                     produkId = produkId,
                     onBack = { navController.popBackStack() },

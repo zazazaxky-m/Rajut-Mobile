@@ -18,14 +18,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
-import org.tubeskelompok1.rajutmobile.generated.resources.Res
-import org.tubeskelompok1.rajutmobile.generated.resources.workshop_poster
 import org.tubeskelompok1.rajutmobile.model.WorkshopData
 import org.tubeskelompok1.rajutmobile.ui.AppColors
 
@@ -44,15 +43,18 @@ fun DetailWorkshopScreen(workshopId: Int, onBack: () -> Unit) {
                 .padding(horizontal = 20.dp, vertical = 16.dp)
         ) {
             Image(
-                painter = painterResource(Res.drawable.workshop_poster),
+                painter = painterResource(workshop.posterImage),
                 contentDescription = "Poster ${workshop.title}",
-                modifier = Modifier.fillMaxWidth().height(320.dp),
-                contentScale = ContentScale.FillWidth
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
             )
             Spacer(Modifier.height(18.dp))
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(2.dp),
+                shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
@@ -66,34 +68,30 @@ fun DetailWorkshopScreen(workshopId: Int, onBack: () -> Unit) {
                     HorizontalDivider(color = Color(0xFF9A7479))
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        "Tingkatkan kreativitas dan pelajari keahlian baru dalam membuat tas rajut sendiri!",
+                        workshop.description,
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(Modifier.height(14.dp))
                     WorkshopDetailText(
                         "Informasi Pelaksanaan\n" +
-                            "• Hari & Tanggal: Sabtu, 30 September 2023\n" +
-                            "• Waktu: 10.00 WIB - selesai (Your Bag Ready)\n" +
-                            "• Lokasi: Bandung Creative Hub, Jl. Laswi No. 7\n" +
-                            "• Biaya pendaftaran (HTM): Rp155.000,-"
+                            "• Hari & Tanggal: ${workshop.date}\n" +
+                            "• Waktu: ${workshop.time}\n" +
+                            "• Lokasi: ${workshop.location}\n" +
+                            "• Biaya pendaftaran (HTM): ${workshop.price}"
                     )
                     Spacer(Modifier.height(14.dp))
                     WorkshopDetailText(
                         "Apa yang Akan Kamu Dapatkan? (What Will You Get)\n" +
-                            "1. Kit & Tools: Seluruh perlengkapan dan bahan merajut sudah disediakan.\n" +
-                            "2. Your Crochet Bag: Hasil karya tas rajut buatanmu sendiri yang bisa langsung dibawa pulang!\n" +
-                            "3. New Friend & New Skills: Pengalaman belajar merajut dari dasar, keahlian baru, serta teman baru sesama pecinta crafting."
+                            workshop.whatYouGet.mapIndexed { idx, item -> "${idx + 1}. $item" }.joinToString("\n")
                     )
                     Spacer(Modifier.height(14.dp))
                     WorkshopDetailText(
                         "Pendaftaran & Informasi Kontak\n" +
-                            "Pendaftaran dapat dilakukan melalui:\n" +
-                            "• Direct Message (DM) Instagram: @find.ur.self\n" +
-                            "• WhatsApp: 0858-4688-2724"
+                            workshop.contact
                     )
                     Spacer(Modifier.height(14.dp))
                     WorkshopDetailText(
-                        "Catatan: Penyelenggara acara ini bekerja sama antara Arajut dan Find Your Self."
+                        "Catatan: Penyelenggara acara ini bekerja sama antara Arajut dan mitra komunitas crafting."
                     )
                 }
             }
